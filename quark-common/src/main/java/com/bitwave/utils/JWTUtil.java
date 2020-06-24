@@ -1,5 +1,7 @@
 package com.bitwave.utils;
 
+import cn.hutool.core.date.DateUtil;
+import com.alibaba.druid.util.StringUtils;
 import com.bitwave.entity.SysUser;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -59,6 +62,17 @@ public class JWTUtil {
         return claims.getExpiration();
     }
 
+    private boolean tokenRefreshJustBefore(String token,int time){
+        Claims claims = getClaimsFormToken(token);
+        Date create = claims.get("createTime",Date.class);
+        Date refresh = new Date();
+        if (refresh.after(create)&&refresh.before(DateUtil.offsetSecond(create,time))) {
+            return true;
+        }
+        return false;
+    }
+
+
 
     public String getUserNameFormToken(String token){
         String username;
@@ -70,6 +84,36 @@ public class JWTUtil {
            log.error("获取用户名失败:{};异常:{}",username,e.getMessage());
         }
         return username;
+    }
+
+    public String generateToken(SysUser user){
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("username",user.getUsername());
+        claims.put("createTime",new Date());
+        return generateToken(claims);
+    }
+
+    public String refreshHeadToken(String oldToken){
+        if (StringUtils.isEmpty(oldToken)) {
+            return null;
+        }
+        String token = oldToken.substring(tokenPrefix.length());
+        if (StringUtils.isEmpty(token)) {
+            return null;
+        }
+        Claims claims = getClaimsFormToken(token);
+        if (claims == null) {
+            return null;
+        }
+        if (isTokenExpired(token)) {
+            return null;
+        }
+        if (tokenRefreshJustBefore(token,30 * 60)){
+            return token;
+        }else{
+            claims.put("createTime",new Date());
+            return generateToken(claims);
+        }
     }
 
 
