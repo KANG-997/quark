@@ -72,10 +72,7 @@ public class JWTUtil {
         return username;
     }
 
-    public boolean validateToken(String token, SysUser user){
-        String username = getUserNameFormToken(token);
-        return username.equals(user.getName());
-    }
+
 
 
 
