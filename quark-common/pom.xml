@@ -21,10 +21,6 @@
         <artifactId>jjwt</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.bitwave</groupId>
-            <artifactId>quark-persistence</artifactId>
-        </dependency>
-        <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
         </dependency>
