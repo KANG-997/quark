@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.spec.SecretKeySpec;
+import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,6 +62,14 @@ public class JWTUtil {
     private Date getExpiredDateFromToken(String token){
         Claims claims = getClaimsFormToken(token);
         return claims.getExpiration();
+    }
+
+    private String tokenFilter(String token){
+        if (token.startsWith("Bearer")) {
+            token = token.replace("Bearer","").trim();
+            return token;
+        }
+        return token.trim();
     }
 
     private boolean tokenRefreshJustBefore(String token,int time){
@@ -116,11 +126,20 @@ public class JWTUtil {
         }
     }
 
-
-
-
-
-
-
-
+    public boolean verify(String token,String username){
+        token = tokenFilter(token);
+        try {
+            Key key = new SecretKeySpec(token.getBytes(), SignatureAlgorithm.HS512.getJcaName());
+            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(key).parseClaimsJws(token);
+            String tokenUsername = claimsJws.getBody().getSubject();
+            if (!tokenUsername.equals(username)) {
+                log.info("用户名不匹配");
+                return false;
+            }
+        } catch (Exception e) {
+            log.error("验证失败");
+            return false;
+        }
+        return true;
+    }
 }
