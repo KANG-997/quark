@@ -3,6 +3,8 @@ package com.bitwave.admin.aspect;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import com.bitwave.admin.anno.LogInfo;
+import com.bitwave.admin.service.SysLogsService;
+import com.bitwave.entity.SysLogs;
 import com.bitwave.enums.LogCode;
 import com.bitwave.response.ResultResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
@@ -29,10 +32,13 @@ import java.util.List;
 @Slf4j
 public class LogAspect {
 
+    private Integer logId;
+
+    @Resource
+    private SysLogsService sysLogsService;
+
     @Pointcut("@annotation(com.bitwave.admin.anno.LogInfo)")
     private void pointCut(){
-
-
     }
 
 
@@ -48,18 +54,20 @@ public class LogAspect {
         log.info("请求路径:{}",requestURI);
         log.info("内容类型:{}",contentType);
         log.info("远程地址:{}",remoteHost);
+
     }
 
     @Around("pointCut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         long startTime = System.currentTimeMillis();
         Object result = joinPoint.proceed();
         long endTime = System.currentTimeMillis();
         long spendTime = endTime - startTime;
         ResultResponse res = (ResultResponse) result;
         Object data = res.getData();
-        saveLog(joinPoint,spendTime);
-        log.info("result-> {}",data);
+        saveLog(joinPoint,request,spendTime);
+        log.info("result:{}",data);
         return result;
 
     }
@@ -71,13 +79,26 @@ public class LogAspect {
         log.info("----------------end----------------");
     }
 
-    private void saveLog(ProceedingJoinPoint joinPoint,Long seconds){
+    private void saveLog(ProceedingJoinPoint joinPoint,HttpServletRequest request,Long seconds){
+        SysLogs sysLogs = new SysLogs();
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
+        String requestMethod = request.getMethod();
+        String requestURI = request.getRequestURI();
+        String contentType = request.getContentType();
+        String remoteHost = request.getRemoteHost();
         LogInfo logInfo = method.getAnnotation(LogInfo.class);
         if (logInfo != null) {
+            sysLogs.setRequestmethod(requestMethod);
+            sysLogs.setRequesturi(requestURI);
+            sysLogs.setRequestcontenttype(contentType);
+            sysLogs.setRemotehost(remoteHost);
             LogCode logCode = logInfo.operatorType();
             String value = logInfo.value();
+            sysLogs.setOperatortype("["+logCode.getCode()+","+value+"]");
+            DateTime date = DateUtil.date();
+            sysLogs.setRequestdate(date);
+            sysLogsService.addLog(sysLogs);
             log.info("操作类型:{},操作内容：{}",logCode.getCode(),value);
             Object[] args = joinPoint.getArgs();
             List<Object> objects = Arrays.asList(args);
@@ -85,4 +106,5 @@ public class LogAspect {
             log.info("处理时间:{}/ms",seconds);
         }
     }
+
 }
