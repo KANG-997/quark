@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quark.mapper.SysUserRoleMapper">
+    <resultMap id="roleMap" type="com.quark.entity.SysRole">
+        <result column="ROLE_ID" jdbcType="DECIMAL" property="roleId"/>
+        <result column="ROLE_NAME" jdbcType="VARCHAR" property="roleName"/>
+        <result column="REMARK" jdbcType="VARCHAR" property="remark"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime"/>
+    </resultMap>
+    <select id="findUseRoleByUsername" resultMap="roleMap">
+       select r.* from sys_role r
+           left join sys_user_role ur on r.role_id = ur.role_id
+           left join sys_user su on ur.user_id = su.id
+        where su.username = #{username}
+    </select>
+
+
+</mapper>
