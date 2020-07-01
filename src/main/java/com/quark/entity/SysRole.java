@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 import java.io.Serializable;
@@ -15,7 +17,8 @@ import java.io.Serializable;
  * @since 2020-06-30 15:47:07
  */
 
-@Data
+@Getter
+@Setter
 @TableName("sys_role")
 public class SysRole implements Serializable {
     private static final long serialVersionUID = 813723110628900630L;
