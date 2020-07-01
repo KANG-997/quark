@@ -1,5 +1,8 @@
 package com.quark.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.util.Date;
@@ -13,11 +16,13 @@ import java.io.Serializable;
  */
 
 @Data
+@TableName("sys_menu")
 public class SysMenu implements Serializable {
     private static final long serialVersionUID = 304252694735319744L;
     /**
     * 菜单ID
     */
+    @TableId(type = IdType.AUTO)
     private Integer menuId;
     /**
     * 父主键ID
