@@ -1,7 +1,9 @@
 package com.quark.authentication;
 
+import com.quark.entity.SysMenu;
 import com.quark.entity.SysRole;
 import com.quark.entity.SysUser;
+import com.quark.service.SysRoleMenuService;
 import com.quark.service.SysUserRoleService;
 import com.quark.service.SysUserService;
 import org.apache.shiro.authc.AuthenticationException;
@@ -26,6 +28,8 @@ public class MyRealm extends AuthorizingRealm {
     private SysUserService sysUserService;
     @Resource
     private SysUserRoleService sysUserRoleService;
+    @Resource
+    private SysRoleMenuService sysRoleMenuService;
 
 
 
@@ -40,8 +44,9 @@ public class MyRealm extends AuthorizingRealm {
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         Set<String> roleSet = sysUserRoleService.findUserRoleByUser(username).stream().map(SysRole::getRoleName).collect(Collectors.toSet());
         simpleAuthorizationInfo.setRoles(roleSet);
-
-        return null;
+        Set<String> perms = sysRoleMenuService.findSysMenuByUsername(username).stream().map(SysMenu::getPerms).collect(Collectors.toSet());
+        simpleAuthorizationInfo.setStringPermissions(perms);
+        return simpleAuthorizationInfo;
     }
 
     @Override
