@@ -7,7 +7,9 @@ import lombok.Getter;
 public enum ResultCode {
 
     SUCCESS(10000,"success"),
-    FAILED(10001,"failed");
+    FAILED(10001,"failed"),
+
+    LOGIN_SUCCESS(20001,"login_success");
 
 
     private Integer code;

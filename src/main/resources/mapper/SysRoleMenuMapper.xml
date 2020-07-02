@@ -15,6 +15,7 @@
         <result column="MODIFY_TIME" jdbcType="TIMESTAMP" property="modifyTime"/>
     </resultMap>
 
+<!--    查找权限-->
     <select id="findUserPermission" resultMap="menuMap">
         select distinct m.perms
         from sys_role r
