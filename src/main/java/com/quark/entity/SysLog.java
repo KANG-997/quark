@@ -1,5 +1,8 @@
 package com.quark.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.util.Date;
@@ -13,12 +16,14 @@ import java.io.Serializable;
  */
 
 @Data
+@TableName("sys_log")
 public class SysLog implements Serializable {
 
     private static final long serialVersionUID = 993843248614078860L;
     /**
     * 主键ID
     */
+    @TableId(type = IdType.AUTO)
     private Integer id;
     /**
     * 用户名
