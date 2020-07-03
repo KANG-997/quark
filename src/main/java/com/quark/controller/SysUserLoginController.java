@@ -29,14 +29,14 @@ public class SysUserLoginController {
     public ResultResponse sysUserLogin(@RequestParam("username")String username,@RequestParam("password")String password){
         SysUser user = sysUserService.findUserByUsername(username);
         if (user == null){
-            return ResultResponse.failed(ResultCode.FAILED);
+            return ResultResponse.failed(ResultCode.LOGIN_USER_NOT_EXISTS);
         }
         if (!user.getPassword().equals(MD5Util.encrypt(password))) {
 
-            return ResultResponse.failed(ResultCode.FAILED);
+            return ResultResponse.failed(ResultCode.LOGIN_USER_WRONG_PASSWORD);
         }
         if (user.getStatus() != 0){
-            return ResultResponse.failed(ResultCode.FAILED);
+            return ResultResponse.failed(ResultCode.LOGIN_USER_STATUS_ABNORMAL);
         }
         String token = JwtUtil.sign(username, MD5Util.encrypt(password));
         Map<String, Object> result = new LinkedHashMap<>();
