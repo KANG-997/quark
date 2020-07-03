@@ -1,6 +1,5 @@
 package com.quark.config;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cache.CacheManager;
@@ -8,7 +7,6 @@ import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -18,11 +16,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-
-import javax.crypto.KeyGenerator;
 import java.io.Serializable;
 import java.time.Duration;
 
@@ -35,9 +30,9 @@ public class RedisConfig extends CachingConfigurerSupport {
      private int port;
      @Value("${spring.redis.timeout}")
      private int timeout;
-     @Value("${spring.redis.jedis.maxIdle}")
+     @Value("${spring.redis.jedis.pool.max-idle}")
      private int maxIdle;
-     @Value("${spring.redis.jedis.maxWaitMills}")
+     @Value("${spring.redis.jedis.pool.max-wait}")
      private long maxWaitMills;
      @Value("${spring.redis.database:0}")
      private int database;
