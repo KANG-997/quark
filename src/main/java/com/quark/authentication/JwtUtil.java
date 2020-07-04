@@ -55,4 +55,12 @@ public class JwtUtil {
             return null;
         }
     }
+
+    public static String subToken(String token){
+        if (token != null && token.startsWith("Bearer")) {
+            token = token.replace("Bearer","").trim();
+            return token;
+        }
+        return "";
+    }
 }

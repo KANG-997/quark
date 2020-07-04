@@ -13,6 +13,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +38,8 @@ public class LogAspect {
         HttpServletRequest httpServletRequest = HttpContextUtil.getHttpServletRequest();
         String ipAddr = IPUtils.getIpAddr(httpServletRequest);
         long time_cost = System.currentTimeMillis() - start;
-        String token = ((String) SecurityUtils.getSubject().getPrincipal());
+        String token = JwtUtil.subToken(httpServletRequest.getHeader("Authorization"));
+        log.info("token:{}",token);
         String username = "";
         if (StringUtils.isNotBlank(token)) {
             username = JwtUtil.getUsername(token);
@@ -45,7 +47,7 @@ public class LogAspect {
         SysLog sysLog = new SysLog();
         sysLog.setUsername(username);
         sysLog.setIp(ipAddr);
-        sysLog.setTimeCost(time_cost);
+        sysLog.setTimeCost(time_cost+"/ms");
         sysLogService.saveLog(joinPoint,sysLog);
         return  result;
     }

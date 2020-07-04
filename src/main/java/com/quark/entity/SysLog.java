@@ -36,7 +36,7 @@ public class SysLog implements Serializable {
     /**
     * 耗时
     */
-    private Long timeCost;
+    private String timeCost;
     /**
     * 调用方法
     */

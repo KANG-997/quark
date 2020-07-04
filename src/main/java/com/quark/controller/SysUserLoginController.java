@@ -1,5 +1,6 @@
 package com.quark.controller;
 
+import com.quark.annon.LogInfo;
 import com.quark.authentication.JwtUtil;
 import com.quark.common.ResultResponse;
 import com.quark.entity.SysLoginLog;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -24,6 +24,7 @@ public class SysUserLoginController {
     private SysUserService sysUserService;
     @Resource
     private SysLoginLogService sysLoginLogService;
+
 
     @PostMapping("/login")
     public ResultResponse sysUserLogin(@RequestParam("username")String username,@RequestParam("password")String password){
@@ -49,4 +50,26 @@ public class SysUserLoginController {
         this.sysUserService.updateLastLoginTime(user.getId());
         return ResultResponse.success(ResultCode.SUCCESS,result);
     }
+
+//    @LogInfo("获取系统用户信息:根据username")
+//    @GetMapping("/user_info")
+//    @RequiresPermissions("sys:userInfo")
+//    public ResultResponse sysUserGetInfo(@RequestParam("username")String username){
+//        SysUser user = sysUserService.findUserByUsername(username);
+//        if (user == null) {
+//            return ResultResponse.failed(ResultCode.LOGIN_USER_NOT_EXISTS);
+//        }
+//        return ResultResponse.success(ResultCode.SUCCESS,user);
+//    }
+
+//    @LogInfo("获取系统用户信息:根据usernameTest")
+//    @GetMapping("/user_info_test")
+//    @RequiresPermissions("sys:userInfoTest")
+//    public ResultResponse sysUserGetInfoTest(@RequestParam("username")String username){
+//        SysUser user = sysUserService.findUserByUsername(username);
+//        if (user == null) {
+//            return ResultResponse.failed(ResultCode.LOGIN_USER_NOT_EXISTS);
+//        }
+//        return ResultResponse.success(ResultCode.SUCCESS,user);
+//    }
 }

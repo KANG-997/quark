@@ -16,4 +16,9 @@
     </select>
 
 
+    <select id="findUserRoleIdByUserId" resultType="java.lang.Integer">
+        select sur.role_id from sys_user_role sur left join sys_user su on sur.user_id = su.id left join sys_role sr on sur.role_id = sr.id where su.status = 0;
+    </select>
+
+
 </mapper>
