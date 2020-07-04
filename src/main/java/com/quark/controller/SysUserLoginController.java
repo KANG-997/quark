@@ -51,25 +51,4 @@ public class SysUserLoginController {
         return ResultResponse.success(ResultCode.SUCCESS,result);
     }
 
-//    @LogInfo("获取系统用户信息:根据username")
-//    @GetMapping("/user_info")
-//    @RequiresPermissions("sys:userInfo")
-//    public ResultResponse sysUserGetInfo(@RequestParam("username")String username){
-//        SysUser user = sysUserService.findUserByUsername(username);
-//        if (user == null) {
-//            return ResultResponse.failed(ResultCode.LOGIN_USER_NOT_EXISTS);
-//        }
-//        return ResultResponse.success(ResultCode.SUCCESS,user);
-//    }
-
-//    @LogInfo("获取系统用户信息:根据usernameTest")
-//    @GetMapping("/user_info_test")
-//    @RequiresPermissions("sys:userInfoTest")
-//    public ResultResponse sysUserGetInfoTest(@RequestParam("username")String username){
-//        SysUser user = sysUserService.findUserByUsername(username);
-//        if (user == null) {
-//            return ResultResponse.failed(ResultCode.LOGIN_USER_NOT_EXISTS);
-//        }
-//        return ResultResponse.success(ResultCode.SUCCESS,user);
-//    }
 }
